@@ -4,6 +4,7 @@ gradle/
 *.iml
 *.ipr
 *.iws
+*/build/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

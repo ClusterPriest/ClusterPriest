@@ -14,6 +14,7 @@
 package com.clusterpriest.analyze;
 
 import kafka.serializer.StringDecoder;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.streaming.Durations;
@@ -33,11 +34,14 @@ public class Analyzer {
     private static final Logger logger = LoggerFactory.getLogger(Analyzer.class);
 
     private static final String KAFKA_BROKERS = "kafka.brokers";
-    private static final String KAFKA_TOPICS = "kafka.topics";
+    private static final String KAFKA_INPUT_TOPIC = "kafka.input.topic";
+    private static final String KAFKA_OUTPUT_TOPIC = "kafka.output.topic";
 
     private static final String SPARK_APP_NAME = "spark.app.name";
     private static final String SPARK_MASTER = "spark.master";
     private static final String SPARK_BATCH_DURATION = "spark.batch.duration";
+
+    private static KafkaProducerThread producerThread = null;
 
     public static void main(String[] args) {
         String confFile;
@@ -64,10 +68,14 @@ public class Analyzer {
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(sparkConf,
                 Durations.seconds(Integer.parseInt(context.getString(SPARK_BATCH_DURATION))));
 
-        HashSet<String> topicsSet = new HashSet<String>(Arrays.asList(context.getString(KAFKA_TOPICS)
+        final String brokers = context.getString(KAFKA_BROKERS);
+        final String input_topic = context.getString(KAFKA_INPUT_TOPIC);
+        final String output_topic = context.getString(KAFKA_OUTPUT_TOPIC);
+
+        HashSet<String> topicsSet = new HashSet<String>(Arrays.asList(input_topic
                 .split(",")));
         HashMap<String, String> kafkaParams = new HashMap<String, String>();
-        kafkaParams.put("metadata.broker.list", context.getString(KAFKA_BROKERS));
+        kafkaParams.put("metadata.broker.list", brokers);
         kafkaParams.put("auto.offset.reset", "smallest");
 
 
@@ -82,14 +90,23 @@ public class Analyzer {
                 topicsSet
         );
 
+
+        if (producerThread == null) {
+            producerThread = new KafkaProducerThread(brokers, false);
+            producerThread.start();
+        }
+
         // Get the json, split them into words, count the words and print
         JavaDStream<String> json = messages.map(new Function<Tuple2<String, String>, String>() {
             @Override
             public String call(Tuple2<String, String> tuple2) {
-                return tuple2._2();
+                final String value = tuple2._2();
+                producerThread.addRecord(new ProducerRecord<String, String>(output_topic, value));
+                return value;
             }
         });
         json.print();
+
 
         // Start the computation
         javaStreamingContext.start();
