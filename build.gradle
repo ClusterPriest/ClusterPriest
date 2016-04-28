@@ -3,8 +3,8 @@ version = '0.1'
 allprojects {
   apply plugin: 'idea'
   repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
     maven {
       url "https://repository.cloudera.com/artifactory/cloudera-repos/"
     }
@@ -18,8 +18,8 @@ subprojects {
 
 project(':analyze') {
   dependencies {
-    compile "org.apache.spark:spark-streaming_2.10:1.6.0-cdh5.7.0"
-    compile "org.apache.spark:spark-streaming-kafka_2.10:1.6.0-cdh5.7.0"
+    compile "org.apache.spark:spark-streaming_2.10:1.6.0-cdh5.7.1-SNAPSHOT"
+    compile "org.apache.spark:spark-streaming-kafka_2.10:1.6.0-cdh5.7.1-SNAPSHOT"
     compile "org.apache.kafka:kafka_2.10:0.9.0-kafka-2.0.1"
   }
 
@@ -32,7 +32,7 @@ project(':analyze') {
 
   apply plugin: 'application'
 
-  mainClassName = "com.clusterpriest.analyze.app"
+  mainClassName = "com.clusterpriest.analyze.Analyzer"
 
   run {
     if ( project.hasProperty('args') ) {
