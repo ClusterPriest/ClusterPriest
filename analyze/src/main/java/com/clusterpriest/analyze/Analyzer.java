@@ -68,7 +68,7 @@ public class Analyzer {
                 .split(",")));
         HashMap<String, String> kafkaParams = new HashMap<String, String>();
         kafkaParams.put("metadata.broker.list", context.getString(KAFKA_BROKERS));
-        //kafkaParams.put("auto.offset.reset", "smallest");
+        kafkaParams.put("auto.offset.reset", "smallest");
 
 
         // Create direct kafka stream with brokers and topics
@@ -94,7 +94,5 @@ public class Analyzer {
         // Start the computation
         javaStreamingContext.start();
         javaStreamingContext.awaitTermination();
-
-        logger.info("Done with sentiment analysis");
     }
 }
