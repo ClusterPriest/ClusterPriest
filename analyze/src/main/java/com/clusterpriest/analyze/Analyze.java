@@ -104,7 +104,7 @@ public class Analyze {
       public String call(Tuple2<String, String> tuple2) {
         String key = tuple2._1().replace('\'', '\"');
         String value = tuple2._2().replace('\'', '\"');
-        logger.info("Rule Builder received " + value);
+        logger.info("Rule Builder received " + key + ", " + value);
 
         Gson gson = new Gson();
         LogData filteredLogData = gson.fromJson(value, LogData.class);
