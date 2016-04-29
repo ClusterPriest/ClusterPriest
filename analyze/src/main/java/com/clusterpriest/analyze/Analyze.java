@@ -13,11 +13,13 @@
 
 package com.clusterpriest.analyze;
 
+import com.clusterpriest.analyze.engine.State;
 import com.clusterpriest.common.utils.Context;
 import com.clusterpriest.common.kafka.KafkaProducerThread;
 import com.clusterpriest.analyze.engine.Engine;
 import com.clusterpriest.analyze.engine.EngineFactory;
 import com.clusterpriest.filter.log.LogData;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -31,10 +33,14 @@ import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
+import scala.util.parsing.combinator.testing.Str;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 public class Analyze {
   private static final Logger logger = LoggerFactory.getLogger(Analyze.class);
@@ -119,11 +125,23 @@ public class Analyze {
             engine.addToMap(file, filteredLogData.rootCause);
             producerThread.addRecord(new ProducerRecord<String, String>("notify_" + host,
                 engine.getRootCauses(file).toString(),
-                "Due to these recent " + Arrays.toString(engine.getRootCauses(file).toArray()) + ", you might see " + " Broker failure."));
+                "Due to these recent " + Arrays.toString(new HashSet(engine.getRootCauses(file)).toArray())
+                    + ", you might see " + doPrediction(engine)));
           }
         }
         return value;
       }
+
+      private String doPrediction(Engine engine) {
+        Set<String> currentSet = Sets.newHashSet();
+        for (Map.Entry<String, LinkedList<String>> entry: engine.getFile2RootCause().entrySet()) {
+          for(String s : entry.getValue()) {
+            currentSet.add(s);
+          }
+        }
+        State state = new State();
+        return state.predict(currentSet);
+       }
     });
     json.print();
 
