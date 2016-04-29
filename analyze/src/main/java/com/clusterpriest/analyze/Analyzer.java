@@ -112,8 +112,9 @@ public class Analyzer {
                 try {
                     KeyVal keyVal = gson.fromJson(value, KeyVal.class);
                     if (keyVal != null) {
-                        final LogData logData = (new LogStringParser()).parse(keyVal.message);
+                        LogData logData = (new LogStringParser()).parse(keyVal.message);
                         if (logData != null) {
+                            logger.info("Logdata present: " + logData.toString());
                             producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                         }
                         else {
