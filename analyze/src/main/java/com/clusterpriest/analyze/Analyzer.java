@@ -105,15 +105,25 @@ public class Analyzer {
         // Get the json, split them into words, count the words and print
         JavaDStream<String> json = messages.map(new Function<Tuple2<String, String>, String>() {
             @Override
-            public String call(Tuple2<String, String> tuple2) throws ParseException, IOException {
+            public String call(Tuple2<String, String> tuple2) {
                 final String value = tuple2._2();
                 logger.info("Analyzer received " + value);
                 ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = mapper.readValue(value, JsonNode.class);
+                JsonNode root = null;
+                try {
+                    root = mapper.readValue(value, JsonNode.class);
+                } catch (IOException e) {
+                    logger.info("Failed to parse JSON message: " + value);
+                }
                 final JsonNode message = root.get("message");
-                final LogData logData = LogStringParser.getInstance().parse(message.asText());
-                if (logData != null) {
-                    producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
+                final LogData logData;
+                try {
+                    logData = LogStringParser.getInstance().parse(message.asText());
+                    if (logData != null) {
+                        producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
+                    }
+                } catch (ParseException e) {
+                    logger.info("Parsing exception for msg: " + value);
                 }
                 return value;
             }
