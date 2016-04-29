@@ -52,8 +52,8 @@ public class LogData {
                 "\"type\": \"" + type + "\", " +
                 "\"filename\": \"" + fileName + "\", " +
                 "\"message\":\"" + message + "\", " +
-                "\"filter\":\"" + filterType + "\"" +
-                "\"roo\":\"" + rootCause + "\"" +
+                "\"filter\":\"" + filterType + "\", " +
+                "\"rootCause\":\"" + rootCause + "\"" +
                 "}";
     }
 
