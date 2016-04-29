@@ -105,8 +105,8 @@ public class Analyzer {
             public String call(Tuple2<String, String> tuple2) throws ParseException {
                 final String value = tuple2._2();
                 final LogData logData = LogStringParser.getInstance().parse(value);
+                logger.info("Analyzer received " + value);
                 if (logData != null) {
-                    logger.debug(logData.toString());
                     producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                 }
                 return value;
