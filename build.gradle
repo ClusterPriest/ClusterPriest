@@ -48,3 +48,32 @@ project(':analyze') {
     }
   }
 }
+
+project(':rules') {
+  dependencies {
+    compile project(':analyze')
+  }
+
+  configurations {
+    all*.exclude group: 'javax.jms', module: 'jms'
+    all*.exclude group: 'com.sun.jdmk', module: 'jmxtools'
+    all*.exclude group: 'com.sun.jmx', module: 'jmxri'
+    published
+  }
+
+  configurations.all {
+    resolutionStrategy {
+      force 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+    }
+  }
+
+  apply plugin: 'application'
+
+  mainClassName = "com.clusterpriest.rules.RulesBuilder"
+
+  run {
+    if ( project.hasProperty('args') ) {
+      args project.args.split('\\s+')
+    }
+  }
+}

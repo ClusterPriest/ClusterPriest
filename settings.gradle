@@ -1,3 +1,4 @@
 rootProject.name = 'clusterpriest'
 
 include 'analyze'
+include 'rules'
