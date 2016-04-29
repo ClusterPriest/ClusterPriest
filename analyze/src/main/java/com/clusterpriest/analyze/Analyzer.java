@@ -107,18 +107,17 @@ public class Analyzer {
             public String call(Tuple2<String, String> tuple2) {
                 String value = tuple2._2().replace('\'', '\"');
                 logger.info("Analyzer received " + value);
-                ObjectMapper mapper = new ObjectMapper();
+
                 Gson gson = new Gson();
                 try {
                     KeyVal keyVal = gson.fromJson(value, KeyVal.class);
                     if (keyVal != null) {
-                        final String message = keyVal.message;
-                        final LogData logData = LogStringParser.getInstance().parse(message);
+                        final LogData logData = LogStringParser.getInstance().parse(keyVal.message);
                         if (logData != null) {
                             producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                         }
                         else {
-                            logger.info("logdata is null: ", keyVal.toString(), message);
+                            logger.info("logdata is null: " + keyVal.toString() + "\n" + keyVal.message);
                         }
                     }
                 } catch (ParseException e) {
