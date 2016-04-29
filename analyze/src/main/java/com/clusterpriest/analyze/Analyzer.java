@@ -118,9 +118,10 @@ public class Analyzer {
                         }
                     }
                 } catch (IOException e) {
-                    logger.info("Failed to parse JSON message: " + value);
+                    logger.info("Failed to parse JSON message: " + value, e);
+
                 } catch (ParseException e) {
-                    logger.info("Parsing exception for msg: " + value);
+                    logger.info("Parsing exception for msg: " + value, e);
                 }
                 return value;
             }
