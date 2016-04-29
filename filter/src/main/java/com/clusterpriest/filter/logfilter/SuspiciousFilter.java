@@ -21,7 +21,8 @@ public class SuspiciousFilter implements IFilter {
     boolean found = matcher.find();
     if (found) {
       logData.rootCause = matcher.group(0);
+      return logData;
     }
-    return logData;
+    return null;
   }
 }
