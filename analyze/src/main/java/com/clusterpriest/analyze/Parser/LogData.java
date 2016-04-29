@@ -12,6 +12,8 @@
  */
 package com.clusterpriest.analyze.Parser;
 
+import com.clusterpriest.analyze.filter.FilterFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +23,7 @@ public class LogData {
     public Type type;
     public String fileName;
     public String message;
+    public FilterFactory.FILTER_TYPE filterType;
 
     public LogData(String dateString, String typeString, String fileName, String message) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS,sss");
@@ -28,17 +31,25 @@ public class LogData {
         this.type = Type.fromName(typeString);
         this.fileName = fileName;
         this.message = message;
-
     }
 
     @Override
     public String toString() {
         return "LogData{" +
-                "date=" + date +
-                ", type=" + type +
-                ", fileName='" + fileName + '\'' +
-                ", message='" + message + '\'' +
-                '}';
+            "date=" + date +
+            ", type=" + type +
+            ", fileName='" + fileName + '\'' +
+            ", message='" + message + '\'' +
+            ", filterType=" + filterType +
+            '}';
+    }
+
+    public FilterFactory.FILTER_TYPE getFilterType() {
+        return filterType;
+    }
+
+    public void setFilterType(FilterFactory.FILTER_TYPE filterType) {
+        this.filterType = filterType;
     }
 
     public enum Type {

@@ -15,7 +15,8 @@ package com.clusterpriest.analyze;
 
 import com.clusterpriest.analyze.Parser.LogData;
 import com.clusterpriest.analyze.Parser.LogStringParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.clusterpriest.analyze.filter.ErrorFilter;
+import com.clusterpriest.analyze.filter.FilterFactory;
 import com.google.gson.Gson;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -47,6 +48,7 @@ public class Analyzer {
     private static final String SPARK_BATCH_DURATION = "spark.batch.duration";
 
     private static KafkaProducerThread producerThread = null;
+    private static FilterFactory filterFactory;
 
     public static void main(String[] args) {
         String confFile;
@@ -56,7 +58,6 @@ public class Analyzer {
         } else {
             confFile = args[0];
         }
-
         logger.info("Starting analysis");
 
         Context context;
@@ -67,6 +68,7 @@ public class Analyzer {
             return;
         }
 
+        setupFilters();
         // Create context
         SparkConf sparkConf = new SparkConf().setAppName(context.getString(SPARK_APP_NAME));
         sparkConf.setMaster(context.getString(SPARK_MASTER));
@@ -82,7 +84,6 @@ public class Analyzer {
         kafkaParams.put("metadata.broker.list", brokers);
         kafkaParams.put("auto.offset.reset", "smallest");
 
-
         // Create direct kafka stream with brokers and topics
         JavaPairInputDStream<String, String> messages = KafkaUtils.createDirectStream(
                 javaStreamingContext,
@@ -93,7 +94,6 @@ public class Analyzer {
                 kafkaParams,
                 topicsSet
         );
-
 
         if (producerThread == null) {
             producerThread = new KafkaProducerThread(brokers, false);
@@ -106,7 +106,6 @@ public class Analyzer {
             public String call(Tuple2<String, String> tuple2) {
                 String value = tuple2._2().replace('\'', '\"');
                 logger.info("Analyzer received " + value);
-
                 //producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
                 Gson gson = new Gson();
                 try {
@@ -115,7 +114,13 @@ public class Analyzer {
                         LogData logData = LogStringParser.getInstance().parse(keyVal.message);
                         if (logData != null) {
                             logger.info("Ashish logdata is " + logData.toString());
-                            producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
+                            LogData filteredLogData = filterFactory.filter(logData);
+                            if(filteredLogData != null) {
+                                producerThread.addRecord(new ProducerRecord<String, String>(
+                                    output_topic,
+                                    tuple2._1(),
+                                    filteredLogData.toString()));
+                            }
                         } else {
                             logger.info("Ashish logdata is null for keyval " + keyVal.toString() + "\n" + keyVal.message);
                         }
@@ -133,6 +138,12 @@ public class Analyzer {
         // Start the computation
         javaStreamingContext.start();
         javaStreamingContext.awaitTermination();
+    }
+
+    private static void setupFilters() {
+        // TODO: 4/29/16 read from properties file and construct the filters
+        filterFactory = new FilterFactory();
+        filterFactory.addFilter(new ErrorFilter());
     }
 
     public class KeyVal {
