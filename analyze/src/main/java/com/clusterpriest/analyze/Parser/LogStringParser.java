@@ -39,10 +39,6 @@ public class LogStringParser {
         boolean found = matcher.find();
         LOG.info("Log string: " + logString + ", matcher found: " + found);
         if (found) {
-            LOG.info("Start index: " + matcher.start());
-            LOG.info(" End index: " + matcher.end() + " ");
-            LOG.info(" Group count : " + matcher.groupCount());
-            LOG.info("group--" + matcher.group());
             return new LogData(matcher.group(0), matcher.group(1), matcher.group(2), matcher.group(3));
         }
         return null;

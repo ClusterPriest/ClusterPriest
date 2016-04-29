@@ -114,12 +114,13 @@ public class Analyzer {
                     if (keyVal != null) {
                         LogData logData = LogStringParser.getInstance().parse(keyVal.message);
                         if (logData != null) {
-                            logger.info("Logdata present: " + logData.toString());
+                            logger.info("Ashish logdata is " + logData.toString());
                             producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
+                        } else {
+                            logger.info("Ashish logdata is null for keyval " + keyVal.toString() + "\n" + keyVal.message);
                         }
-                        else {
-                            logger.info("logdata is null: " + keyVal.toString() + "\n" + keyVal.message);
-                        }
+                    } else {
+                        logger.info("Ashish keyval is null ");
                     }
                 } catch (ParseException e) {
                     logger.info("Parsing exception for msg: " + value, e);
@@ -128,7 +129,6 @@ public class Analyzer {
             }
         });
         json.print();
-
 
         // Start the computation
         javaStreamingContext.start();
