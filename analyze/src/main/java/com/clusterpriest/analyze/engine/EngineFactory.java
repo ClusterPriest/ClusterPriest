@@ -11,7 +11,7 @@ public class EngineFactory {
   private Map<String, Engine> host2EngineMap = new HashMap<String, Engine>();
 
   public void addToEngineMap(String host, Engine engine) {
-    if (host2EngineMap.get(host) != null) {
+    if (host2EngineMap.get(host) == null) {
       host2EngineMap.put(host, engine);
     }
   }

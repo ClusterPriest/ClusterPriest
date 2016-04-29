@@ -34,6 +34,8 @@ public class LogData {
         this.message = message;
     }
 
+    public LogData(){}
+
     @Override
     public String toString() {
         return "LogData{" +
