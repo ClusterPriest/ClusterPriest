@@ -44,6 +44,16 @@ public class LogData {
             '}';
     }
 
+    public String toJson() {
+        return "{" +
+                "\"date\": \"" + date + "\", " +
+                "\"type\": \"" + type + "\", " +
+                "\"filename\": \"" + fileName + "\", " +
+                "\"message\":\"" + message + "\"" +
+                "\"filter\":\"" + filterType + "\"" +
+                "}";
+    }
+
     public FilterFactory.FILTER_TYPE getFilterType() {
         return filterType;
     }

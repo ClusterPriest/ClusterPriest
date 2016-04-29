@@ -119,7 +119,7 @@ public class Analyzer {
                                 producerThread.addRecord(new ProducerRecord<String, String>(
                                     output_topic,
                                     tuple2._1(),
-                                    filteredLogData.toString()));
+                                    filteredLogData.toJson()));
                             }
                         } else {
                             logger.info("Ashish logdata is null for keyval " + keyVal.toString() + "\n" + keyVal.message);
