@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class LogStringParser {
     private static LogStringParser instance;
     private static Pattern logPattern = Pattern.compile("(\\S+ \\S+) +(\\S+) +\\s*(\\S+)\\s*\\: +(.*)");
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(LogStringParser.class);
 
     private LogStringParser() {}
 
@@ -32,6 +33,7 @@ public class LogStringParser {
 
     public LogData parse(String logString) throws ParseException {
         Matcher matcher = logPattern.matcher(logString);
+        LOG.info("Log string: " + logString + ", matcher found: " + matcher.find());
         if (matcher.find())
             return new LogData(matcher.group(0), matcher.group(1), matcher.group(2), matcher.group(3));
         return null;
