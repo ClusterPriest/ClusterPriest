@@ -119,6 +119,7 @@ public class Filter {
                             logger.info("[LogData is] " + logData.toString());
                             LogData filteredLogData = filterFactory.filter(logData);
                             if(filteredLogData != null) {
+                                logger.info("[Filtering in] " + logData.toString());
                                 producerThread.addRecord(new ProducerRecord<String, String>(
                                     output_topic,
                                     tuple2._1(),
