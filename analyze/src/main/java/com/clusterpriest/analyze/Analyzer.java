@@ -15,9 +15,9 @@ package com.clusterpriest.analyze;
 
 import com.clusterpriest.analyze.Parser.LogData;
 import com.clusterpriest.analyze.Parser.LogStringParser;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import kafka.serializer.StringDecoder;
+import org.apache.htrace.fasterxml.jackson.databind.JsonNode;
+import org.apache.htrace.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.function.Function;
@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -104,11 +105,13 @@ public class Analyzer {
         // Get the json, split them into words, count the words and print
         JavaDStream<String> json = messages.map(new Function<Tuple2<String, String>, String>() {
             @Override
-            public String call(Tuple2<String, String> tuple2) throws ParseException {
+            public String call(Tuple2<String, String> tuple2) throws ParseException, IOException {
                 final String value = tuple2._2();
-                String message = new JsonParser().parse(value).getAsJsonObject().get("message").getAsString();
-                final LogData logData = LogStringParser.getInstance().parse(message);
                 logger.info("Analyzer received " + value);
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode root = mapper.readValue(value, JsonNode.class);
+                final JsonNode message = root.get("message");
+                final LogData logData = LogStringParser.getInstance().parse(message.asText());
                 if (logData != null) {
                     producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                 }
