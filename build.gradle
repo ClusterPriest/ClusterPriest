@@ -22,6 +22,7 @@ project(':analyze') {
     compile('org.apache.spark:spark-streaming-kafka_2.10:1.6.0-cdh5.7.1-SNAPSHOT')
     compile('org.apache.kafka:kafka_2.10:0.9.0-kafka-2.0.1')
     compile('org.apache.kafka:kafka-clients:0.9.0-kafka-2.0.1')
+    compile('com.google.code.gson:gson:1.7.2')
   }
 
   configurations {

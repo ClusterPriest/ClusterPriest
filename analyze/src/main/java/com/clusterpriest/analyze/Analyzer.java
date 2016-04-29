@@ -16,6 +16,7 @@ package com.clusterpriest.analyze;
 import com.clusterpriest.analyze.Parser.LogData;
 import com.clusterpriest.analyze.Parser.LogStringParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
@@ -29,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -108,8 +108,9 @@ public class Analyzer {
                 String value = tuple2._2().replace('\'', '\"');
                 logger.info("Analyzer received " + value);
                 ObjectMapper mapper = new ObjectMapper();
+                Gson gson = new Gson();
                 try {
-                    KeyVal keyVal = mapper.readValue(value, KeyVal.class);
+                    KeyVal keyVal = gson.fromJson(value, KeyVal.class);
                     if (keyVal != null) {
                         final String message = keyVal.message;
                         final LogData logData = LogStringParser.getInstance().parse(message);
@@ -117,9 +118,6 @@ public class Analyzer {
                             producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                         }
                     }
-                } catch (IOException e) {
-                    logger.info("Failed to parse JSON message: " + value, e);
-
                 } catch (ParseException e) {
                     logger.info("Parsing exception for msg: " + value, e);
                 }
