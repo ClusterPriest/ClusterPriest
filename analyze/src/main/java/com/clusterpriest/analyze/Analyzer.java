@@ -106,7 +106,7 @@ public class Analyzer {
         JavaDStream<String> json = messages.map(new Function<Tuple2<String, String>, String>() {
             @Override
             public String call(Tuple2<String, String> tuple2) {
-                final String value = tuple2._2();
+                final String value = tuple2._2().replace('\'', '\"');
                 logger.info("Analyzer received " + value);
                 ObjectMapper mapper = new ObjectMapper();
                 try {
