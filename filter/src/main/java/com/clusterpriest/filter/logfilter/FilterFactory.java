@@ -32,7 +32,7 @@ public class FilterFactory {
   }
 
   public enum FILTER_TYPE {
-    NO,
+    SUSPICIOUS,
     ERROR
   }
 }

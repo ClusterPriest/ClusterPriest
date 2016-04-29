@@ -15,9 +15,8 @@ package com.clusterpriest.analyze;
 
 import com.clusterpriest.common.utils.Context;
 import com.clusterpriest.common.kafka.KafkaProducerThread;
-import com.clusterpriest.filter.logfilter.ErrorFilter;
 import com.clusterpriest.filter.logfilter.FilterFactory;
-import com.clusterpriest.filter.logfilter.NoFilter;
+import com.clusterpriest.filter.logfilter.SuspiciousFilter;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
@@ -120,7 +119,7 @@ public class Analyze {
     private static void setupFilters() {
         // TODO: 4/29/16 read from properties file and construct the filters
         filterFactory = new FilterFactory();
-        filterFactory.addFilter(new NoFilter());
+        filterFactory.addFilter(new SuspiciousFilter());
     }
 
     public class KeyVal {

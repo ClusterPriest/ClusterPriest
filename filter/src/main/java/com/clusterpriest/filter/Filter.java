@@ -17,9 +17,8 @@ import com.clusterpriest.common.kafka.KafkaProducerThread;
 import com.clusterpriest.common.utils.Context;
 import com.clusterpriest.filter.log.LogData;
 import com.clusterpriest.filter.log.LogStringParser;
-import com.clusterpriest.filter.logfilter.ErrorFilter;
 import com.clusterpriest.filter.logfilter.FilterFactory;
-import com.clusterpriest.filter.logfilter.NoFilter;
+import com.clusterpriest.filter.logfilter.SuspiciousFilter;
 import com.google.gson.Gson;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -146,7 +145,7 @@ public class Filter {
     private static void setupFilters() {
         // TODO: 4/29/16 read from properties file and construct the filters
         filterFactory = new FilterFactory();
-        filterFactory.addFilter(new NoFilter());
+        filterFactory.addFilter(new SuspiciousFilter());
     }
 
     public class KeyVal {

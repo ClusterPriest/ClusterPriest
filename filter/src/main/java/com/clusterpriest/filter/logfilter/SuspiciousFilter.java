@@ -8,15 +8,15 @@ import java.util.regex.Pattern;
 /**
  * Add a class comment here
  */
-public class NoFilter implements IFilter {
+public class SuspiciousFilter implements IFilter {
   @Override
   public FilterFactory.FILTER_TYPE filterType() {
-    return FilterFactory.FILTER_TYPE.NO;
+    return FilterFactory.FILTER_TYPE.SUSPICIOUS;
   }
 
   @Override
   public LogData doFiltering(LogData logData) {
-    Pattern exceptionPattern = Pattern.compile("[^:]+Exception{1}");
+    Pattern exceptionPattern = Pattern.compile("[^:|^\\s]+Exception{1}");
     Matcher matcher = exceptionPattern.matcher(logData.message);
     boolean found = matcher.find();
     if (found) {
