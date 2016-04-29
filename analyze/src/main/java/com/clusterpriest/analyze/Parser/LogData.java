@@ -28,6 +28,7 @@ public class LogData {
         this.type = Type.fromName(typeString);
         this.fileName = fileName;
         this.message = message;
+
     }
 
     @Override
