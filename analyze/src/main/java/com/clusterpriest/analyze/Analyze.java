@@ -113,8 +113,10 @@ public class Analyze {
           if (index != -1) {
             String host = key.substring(0,  index);
             String file = key.substring(key.indexOf(":") + 1);
+            EngineFactory.getInstance().addToEngineMap(host, new Engine(host));
             Engine engine = EngineFactory.getInstance().getFromEngineMap(host);
             engine.addToMap(file, filteredLogData.rootCause);
+            EngineFactory.getInstance().getFromEngineMap(host);
             producerThread.addRecord(new ProducerRecord<String, String>("notify_" + host,
                 engine.getRootCauses(file).toString(),
                 "dummy prediction"));
