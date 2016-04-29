@@ -19,6 +19,7 @@ import com.clusterpriest.filter.log.LogData;
 import com.clusterpriest.filter.log.LogStringParser;
 import com.clusterpriest.filter.logfilter.ErrorFilter;
 import com.clusterpriest.filter.logfilter.FilterFactory;
+import com.clusterpriest.filter.logfilter.NoFilter;
 import com.google.gson.Gson;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -107,7 +108,7 @@ public class Filter {
             @Override
             public String call(Tuple2<String, String> tuple2) {
                 String value = tuple2._2().replace('\'', '\"');
-                logger.info("Analyzer received " + value);
+                logger.info("[Analyzer received] " + value);
                 //producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
                 Gson gson = new Gson();
                 try {
@@ -115,7 +116,7 @@ public class Filter {
                     if (keyVal != null) {
                         LogData logData = LogStringParser.getInstance().parse(keyVal.message);
                         if (logData != null) {
-                            logger.info("Ashish logdata is " + logData.toString());
+                            logger.info("[LogData is] " + logData.toString());
                             LogData filteredLogData = filterFactory.filter(logData);
                             if(filteredLogData != null) {
                                 producerThread.addRecord(new ProducerRecord<String, String>(
@@ -124,13 +125,13 @@ public class Filter {
                                     filteredLogData.toJson()));
                             }
                         } else {
-                            logger.info("Ashish logdata is null for keyval " + keyVal.toString() + "\n" + keyVal.message);
+                            logger.info("[LogData is null for keyval] " + keyVal.toString() + "\n" + keyVal.message);
                         }
                     } else {
-                        logger.info("Ashish keyval is null ");
+                        logger.info("[KeyVal is null]");
                     }
                 } catch (ParseException e) {
-                    logger.info("Parsing exception for msg: " + value, e);
+                    logger.info("[Parsing exception for msg] " + value, e);
                 }
                 return value;
             }
@@ -145,7 +146,7 @@ public class Filter {
     private static void setupFilters() {
         // TODO: 4/29/16 read from properties file and construct the filters
         filterFactory = new FilterFactory();
-        filterFactory.addFilter(new ErrorFilter());
+        filterFactory.addFilter(new NoFilter());
     }
 
     public class KeyVal {
