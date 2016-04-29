@@ -16,11 +16,13 @@ public class SuspiciousFilter implements IFilter {
 
   @Override
   public LogData doFiltering(LogData logData) {
-    Pattern exceptionPattern = Pattern.compile("[^:|^\\s]+Exception{1}");
-    Matcher matcher = exceptionPattern.matcher(logData.message);
-    boolean found = matcher.find();
-    if (found) {
-      logData.rootCause = matcher.group(0);
+    if (logData.message.contains("Exception")) {
+      Pattern exceptionPattern = Pattern.compile("[^:|^\\s]+Exception{1}");
+      Matcher matcher = exceptionPattern.matcher(logData.message);
+      boolean found = matcher.find();
+      if (found) {
+        logData.rootCause = matcher.group(0);
+      }
       return logData;
     }
     return null;
