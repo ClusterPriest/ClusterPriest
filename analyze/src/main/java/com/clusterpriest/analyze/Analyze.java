@@ -119,26 +119,18 @@ public class Analyze {
             final EngineFactory engineFactory = EngineFactory.getInstance();
             engineFactory.addToEngineMap(host, new Engine(host));
             Engine engine = engineFactory.getFromEngineMap(host);
-            engine.addToMap(file, filteredLogData.rootCause);
-            producerThread.addRecord(new ProducerRecord<String, String>("notify_" + host,
-                engine.getRootCauses(file).toString(),
-                "Due to " + Arrays.toString(new HashSet(engine.getRootCauses(file)).toArray())
-                    + ", you might see " + doPrediction(engine)));
+            engine.addToMap(file, filteredLogData);
+            if (engine.hasPrediction()) {
+              producerThread.addRecord(new ProducerRecord<String, String>("notify_" + host,
+                      engine.getRootCauses(file).toString(),
+                      "Due to " + engine.CAUSE_TO_ENG.get(filteredLogData.rootCause)
+                              + ", you might see " + engine.getPrediction()));
+              engine.setPrediction("");
+            }
           }
         }
         return value;
       }
-
-      private String doPrediction(Engine engine) {
-        Set<String> currentSet = Sets.newHashSet();
-        for (Map.Entry<String, LinkedList<String>> entry: engine.getFile2RootCause().entrySet()) {
-          for(String s : entry.getValue()) {
-            currentSet.add(s);
-          }
-        }
-        State state = new State();
-        return state.predict(currentSet);
-       }
     });
     json.print();
 
