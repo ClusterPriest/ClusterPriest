@@ -81,7 +81,6 @@ public class Analyze {
 
     final String brokers = context.getString(KAFKA_BROKERS);
     final String input_topic = context.getString(KAFKA_INPUT_TOPIC);
-    final String output_topic = context.getString(KAFKA_OUTPUT_TOPIC);
 
     HashSet<String> topicsSet = new HashSet<String>(Arrays.asList(input_topic.split(",")));
     HashMap<String, String> kafkaParams = new HashMap<String, String>();
@@ -115,10 +114,10 @@ public class Analyze {
         Gson gson = new Gson();
         LogData filteredLogData = gson.fromJson(value, LogData.class);
         if (filteredLogData != null) {
-          int index = key.indexOf(':');
+          int index = key.indexOf('-');
           if (index != -1) {
             String host = key.substring(0,  index);
-            String file = key.substring(index + 1);
+            String file = key.substring(key.indexOf(":") + 1);
             Engine engine = EngineFactory.getInstance().getFromEngineMap(host);
             engine.addToMap(file, filteredLogData.rootCause);
             producerThread.addRecord(new ProducerRecord<String, String>("notify_" + host,
