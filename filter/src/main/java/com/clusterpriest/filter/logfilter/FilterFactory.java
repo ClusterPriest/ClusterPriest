@@ -1,7 +1,7 @@
-package com.clusterpriest.analyze.filter;
+package com.clusterpriest.filter.logfilter;
 
 import com.clearspring.analytics.util.Lists;
-import com.clusterpriest.analyze.Parser.LogData;
+import com.clusterpriest.filter.log.LogData;
 
 import java.util.List;
 

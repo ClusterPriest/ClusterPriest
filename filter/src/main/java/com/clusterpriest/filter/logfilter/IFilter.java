@@ -1,6 +1,6 @@
-package com.clusterpriest.analyze.filter;
+package com.clusterpriest.filter.logfilter;
 
-import com.clusterpriest.analyze.Parser.LogData;
+import com.clusterpriest.filter.log.LogData;
 
 /**
  * Add a class comment here

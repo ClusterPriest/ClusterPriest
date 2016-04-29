@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.clusterpriest.analyze;
+package com.clusterpriest.common.kafka;
 
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;

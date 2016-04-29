@@ -13,13 +13,10 @@
 
 package com.clusterpriest.rules;
 
-import com.clusterpriest.analyze.Context;
-import com.clusterpriest.analyze.KafkaProducerThread;
-import com.clusterpriest.analyze.Parser.LogData;
-import com.clusterpriest.analyze.Parser.LogStringParser;
-import com.clusterpriest.analyze.filter.ErrorFilter;
-import com.clusterpriest.analyze.filter.FilterFactory;
-import com.google.gson.Gson;
+import com.clusterpriest.common.utils.Context;
+import com.clusterpriest.common.kafka.KafkaProducerThread;
+import com.clusterpriest.filter.logfilter.ErrorFilter;
+import com.clusterpriest.filter.logfilter.FilterFactory;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
@@ -33,13 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class RulesBuilder {
-    private static final Logger logger = LoggerFactory.getLogger(RulesBuilder.class);
+public class Analyze {
+    private static final Logger logger = LoggerFactory.getLogger(Analyze.class);
 
     private static final String KAFKA_BROKERS = "kafka.brokers";
     private static final String KAFKA_INPUT_TOPIC = "kafka.input.topic";
@@ -109,7 +105,7 @@ public class RulesBuilder {
                 String value = tuple2._2().replace('\'', '\"');
                 logger.info("Rule Builder received " + value);
                 producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
-                
+
                 return value;
             }
         });

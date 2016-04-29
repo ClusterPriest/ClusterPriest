@@ -11,12 +11,14 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.clusterpriest.analyze;
+package com.clusterpriest.filter;
 
-import com.clusterpriest.analyze.Parser.LogData;
-import com.clusterpriest.analyze.Parser.LogStringParser;
-import com.clusterpriest.analyze.filter.ErrorFilter;
-import com.clusterpriest.analyze.filter.FilterFactory;
+import com.clusterpriest.common.kafka.KafkaProducerThread;
+import com.clusterpriest.common.utils.Context;
+import com.clusterpriest.filter.log.LogData;
+import com.clusterpriest.filter.log.LogStringParser;
+import com.clusterpriest.filter.logfilter.ErrorFilter;
+import com.clusterpriest.filter.logfilter.FilterFactory;
 import com.google.gson.Gson;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -36,8 +38,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class Analyzer {
-    private static final Logger logger = LoggerFactory.getLogger(Analyzer.class);
+public class Filter {
+    private static final Logger logger = LoggerFactory.getLogger(Filter.class);
 
     private static final String KAFKA_BROKERS = "kafka.brokers";
     private static final String KAFKA_INPUT_TOPIC = "kafka.input.topic";

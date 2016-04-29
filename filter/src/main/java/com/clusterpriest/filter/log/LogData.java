@@ -10,9 +10,9 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package com.clusterpriest.analyze.Parser;
+package com.clusterpriest.filter.log;
 
-import com.clusterpriest.analyze.filter.FilterFactory;
+import com.clusterpriest.filter.logfilter.FilterFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -16,7 +16,7 @@ subprojects {
   sourceCompatibility = 1.7
 }
 
-project(':analyze') {
+project(':filter') {
   dependencies {
     compile('org.apache.spark:spark-streaming_2.10:1.6.0-cdh5.7.1-SNAPSHOT')
     compile('org.apache.spark:spark-streaming-kafka_2.10:1.6.0-cdh5.7.1-SNAPSHOT')
@@ -40,7 +40,7 @@ project(':analyze') {
 
   apply plugin: 'application'
 
-  mainClassName = "com.clusterpriest.analyze.Analyzer"
+  mainClassName = "com.clusterpriest.filter.Filter"
 
   run {
     if ( project.hasProperty('args') ) {
@@ -49,9 +49,9 @@ project(':analyze') {
   }
 }
 
-project(':rules') {
+project(':analyze') {
   dependencies {
-    compile project(':analyze')
+    compile project(':filter')
   }
 
   configurations {
@@ -69,7 +69,7 @@ project(':rules') {
 
   apply plugin: 'application'
 
-  mainClassName = "com.clusterpriest.rules.RulesBuilder"
+  mainClassName = "com.clusterpriest.analyze.Analyze"
 
   run {
     if ( project.hasProperty('args') ) {
