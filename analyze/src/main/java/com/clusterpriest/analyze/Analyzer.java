@@ -13,6 +13,8 @@
 
 package com.clusterpriest.analyze;
 
+import com.clusterpriest.analyze.Parser.LogData;
+import com.clusterpriest.analyze.Parser.LogStringParser;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
@@ -26,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -99,9 +102,11 @@ public class Analyzer {
         // Get the json, split them into words, count the words and print
         JavaDStream<String> json = messages.map(new Function<Tuple2<String, String>, String>() {
             @Override
-            public String call(Tuple2<String, String> tuple2) {
+            public String call(Tuple2<String, String> tuple2) throws ParseException {
                 final String value = tuple2._2();
-                producerThread.addRecord(new ProducerRecord<String, String>(output_topic, value));
+                final LogData logData = LogStringParser.getInstance().parse(value);
+                logger.debug(logData.toString());
+                producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                 return value;
             }
         });
