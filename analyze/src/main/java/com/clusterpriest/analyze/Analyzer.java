@@ -135,7 +135,15 @@ public class Analyzer {
     }
 
     public class KeyVal {
-        public String key;
         public String message;
+        public String key;
+
+        @Override
+        public String toString() {
+            return "KeyVal{" +
+                    "message='" + message + '\'' +
+                    ", key='" + key + '\'' +
+                    '}';
+        }
     }
 }
