@@ -114,7 +114,7 @@ public class Analyzer {
                     if (keyVal != null) {
                         final LogData logData = (new LogStringParser()).parse(keyVal.message);
                         if (logData != null) {
-                            producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
+                            producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
                         }
                         else {
                             logger.info("logdata is null: " + keyVal.toString() + "\n" + keyVal.message);
