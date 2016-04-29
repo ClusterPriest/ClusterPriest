@@ -15,6 +15,8 @@ package com.clusterpriest.analyze;
 
 import com.clusterpriest.analyze.Parser.LogData;
 import com.clusterpriest.analyze.Parser.LogStringParser;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
@@ -104,7 +106,8 @@ public class Analyzer {
             @Override
             public String call(Tuple2<String, String> tuple2) throws ParseException {
                 final String value = tuple2._2();
-                final LogData logData = LogStringParser.getInstance().parse(value);
+                String message = new JsonParser().parse(value).getAsJsonObject().get("message").getAsString();
+                final LogData logData = LogStringParser.getInstance().parse(message);
                 logger.info("Analyzer received " + value);
                 if (logData != null) {
                     producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
