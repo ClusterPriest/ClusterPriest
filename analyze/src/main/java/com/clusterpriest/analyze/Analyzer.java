@@ -117,6 +117,9 @@ public class Analyzer {
                         if (logData != null) {
                             producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                         }
+                        else {
+                            logger.info("logdata is null: ", keyVal.toString(), message);
+                        }
                     }
                 } catch (ParseException e) {
                     logger.info("Parsing exception for msg: " + value, e);
