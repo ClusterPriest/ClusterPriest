@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LogData {
-    public Date date;
+    public long timeStamp;
     public Type type;
     public String fileName;
     public String message;
@@ -28,7 +28,7 @@ public class LogData {
 
     public LogData(String dateString, String typeString, String fileName, String message) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS,sss");
-        this.date = simpleDateFormat.parse(dateString);
+        this.timeStamp = simpleDateFormat.parse(dateString).getTime();
         this.type = Type.fromName(typeString);
         this.fileName = fileName;
         this.message = message;
@@ -39,7 +39,7 @@ public class LogData {
     @Override
     public String toString() {
         return "LogData{" +
-            "date=" + date +
+            "timeStamp=" + timeStamp +
             ", type=" + type +
             ", fileName='" + fileName + '\'' +
             ", message='" + message + '\'' +
@@ -50,7 +50,7 @@ public class LogData {
 
     public String toJson() {
         return "{" +
-                "\"date\": \"" + date + "\", " +
+                "\"timeStamp\": \"" + timeStamp + "\", " +
                 "\"type\": \"" + type + "\", " +
                 "\"filename\": \"" + fileName + "\", " +
                 "\"message\":\"" + message + "\", " +
