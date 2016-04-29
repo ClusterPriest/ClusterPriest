@@ -16,7 +16,7 @@ public class NoFilter implements IFilter {
 
   @Override
   public LogData doFiltering(LogData logData) {
-    Pattern exceptionPattern = Pattern.compile("\\S+\\s*Exception\\{1\\}");
+    Pattern exceptionPattern = Pattern.compile("[^:]+Exception{1}");
     Matcher matcher = exceptionPattern.matcher(logData.message);
     boolean found = matcher.find();
     if (found) {
