@@ -15,9 +15,8 @@ package com.clusterpriest.analyze;
 
 import com.clusterpriest.analyze.Parser.LogData;
 import com.clusterpriest.analyze.Parser.LogStringParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kafka.serializer.StringDecoder;
-import org.apache.htrace.fasterxml.jackson.databind.JsonNode;
-import org.apache.htrace.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.function.Function;
@@ -106,7 +105,7 @@ public class Analyzer {
         JavaDStream<String> json = messages.map(new Function<Tuple2<String, String>, String>() {
             @Override
             public String call(Tuple2<String, String> tuple2) {
-                final String value = tuple2._2().replace('\'', '\"');
+                String value = tuple2._2().replace('\'', '\"');
                 logger.info("Analyzer received " + value);
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -137,6 +136,22 @@ public class Analyzer {
     public class KeyVal {
         public String message;
         public String key;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
 
         @Override
         public String toString() {
