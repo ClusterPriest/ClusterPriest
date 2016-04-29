@@ -13,7 +13,7 @@ public class ErrorFilter implements IFilter {
 
   @Override
   public LogData doFiltering(LogData logData) {
-    if (logData.type == LogData.Type.ERROR) {
+    if (logData.type == LogData.Type.INFO) {
       return logData;
     }
     return null;
