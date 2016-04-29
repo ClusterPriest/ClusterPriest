@@ -24,6 +24,7 @@ public class LogData {
     public String fileName;
     public String message;
     public FilterFactory.FILTER_TYPE filterType;
+    public String rootCause;
 
     public LogData(String dateString, String typeString, String fileName, String message) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS,sss");
@@ -41,6 +42,7 @@ public class LogData {
             ", fileName='" + fileName + '\'' +
             ", message='" + message + '\'' +
             ", filterType=" + filterType +
+            ", rootCause='" + rootCause + '\'' +
             '}';
     }
 
@@ -51,6 +53,7 @@ public class LogData {
                 "\"filename\": \"" + fileName + "\", " +
                 "\"message\":\"" + message + "\", " +
                 "\"filter\":\"" + filterType + "\"" +
+                "\"roo\":\"" + rootCause + "\"" +
                 "}";
     }
 
