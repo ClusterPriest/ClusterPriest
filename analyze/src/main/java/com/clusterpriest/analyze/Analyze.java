@@ -15,8 +15,8 @@ package com.clusterpriest.analyze;
 
 import com.clusterpriest.common.utils.Context;
 import com.clusterpriest.common.kafka.KafkaProducerThread;
-import com.clusterpriest.filter.engine.Engine;
-import com.clusterpriest.filter.engine.EngineFactory;
+import com.clusterpriest.analyze.engine.Engine;
+import com.clusterpriest.analyze.engine.EngineFactory;
 import com.clusterpriest.filter.log.LogData;
 import com.google.gson.Gson;
 import kafka.serializer.StringDecoder;

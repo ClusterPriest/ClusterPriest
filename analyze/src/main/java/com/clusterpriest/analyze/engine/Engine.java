@@ -1,4 +1,4 @@
-package com.clusterpriest.filter.engine;
+package com.clusterpriest.analyze.engine;
 
 import java.util.HashMap;
 import java.util.LinkedList;

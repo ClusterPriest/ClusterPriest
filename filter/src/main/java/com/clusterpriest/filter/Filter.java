@@ -123,6 +123,8 @@ public class Filter {
                                     output_topic,
                                     tuple2._1(),
                                     filteredLogData.toJson()));
+                            } else {
+                                logger.info("[Filtering out] " + logData.toString());
                             }
                         } else {
                             logger.info("[LogData is null for keyval] " + keyVal.toString() + "\n" + keyVal.message);
