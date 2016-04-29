@@ -22,7 +22,7 @@ public class LogData {
     public String fileName;
     public String message;
 
-    public LogData(String dateString, String fileName, String typeString, String message) throws ParseException {
+    public LogData(String dateString, String typeString, String fileName, String message) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS,sss");
         this.date = simpleDateFormat.parse(dateString);
         this.type = Type.fromName(typeString);
