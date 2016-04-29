@@ -68,7 +68,7 @@ public class KafkaProducerThread extends Thread
             } else { // Send synchronously
                 try {
                     producer.send(producerRecord).get();
-                    LOG.debug("Sent message: " + producerRecord);
+                    LOG.info("Sent message: " + producerRecord);
                 } catch (InterruptedException e) {
                     LOG.error("Failed to send message.", e);
                     shutdown();
@@ -127,7 +127,7 @@ class ProduceCallBack implements Callback {
     public void onCompletion(RecordMetadata metadata, Exception exception) {
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (metadata != null) {
-            LOG.debug(
+            LOG.info(
                     "message(" + key + ", " + message + ") sent to partition(" + metadata.partition() +
                             "), " +
                             "offset(" + metadata.offset() + ") in " + elapsedTime + " ms");
