@@ -19,14 +19,16 @@ public class Engine {
 
   private static final Map<String, String> RULES = new HashMap<>();
   static {
-    RULES.put("java.net.SocketTimeoutException", "Partitions on Kafka broker might become unavailable.");
-    RULES.put("kafka.common.LeaderNotAvailableException", "Broker is not available and might lead to prduce/ cpnsume requests failure.");
+    RULES.put("java.net.SocketTimeoutException", "Partitions on Kafka broker might become unavailable");
+    RULES.put("kafka.common.LeaderNotAvailableException", "Broker is not available and might lead to produce/ consume requests failure");
+    RULES.put("java.io.IOException", "Partitions might go offline on the Kafka cluster");
   }
 
   public static final Map<String, String> CAUSE_TO_ENG = new HashMap<>();
   static {
     CAUSE_TO_ENG.put("java.net.SocketTimeoutException", "Network failures");
     CAUSE_TO_ENG.put("kafka.common.LeaderNotAvailableException", "Leader not available errors");
+    CAUSE_TO_ENG.put("java.io.IOException", "Network BAD.. TOO BAD..");
   }
 
   public Engine() {

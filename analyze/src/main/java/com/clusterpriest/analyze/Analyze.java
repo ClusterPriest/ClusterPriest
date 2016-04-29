@@ -126,6 +126,10 @@ public class Analyze {
                       "Due to " + engine.CAUSE_TO_ENG.get(filteredLogData.rootCause)
                               + ", you might see " + engine.getPrediction()));
               engine.setPrediction("");
+            } else {
+              producerThread.addRecord(new ProducerRecord<String, String>("notify_" + host,
+                      engine.getRootCauses(file).toString(), ""));
+
             }
           }
         }
