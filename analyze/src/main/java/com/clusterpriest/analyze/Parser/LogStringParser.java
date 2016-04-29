@@ -39,7 +39,7 @@ public class LogStringParser {
         boolean found = matcher.find();
         LOG.info("Log string: " + logString + ", matcher found: " + found);
         if (found) {
-            return new LogData(matcher.group(0), matcher.group(1), matcher.group(2), matcher.group(3));
+            return new LogData(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
         }
         return null;
     }
