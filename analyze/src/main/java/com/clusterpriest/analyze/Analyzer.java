@@ -77,8 +77,7 @@ public class Analyzer {
         final String input_topic = context.getString(KAFKA_INPUT_TOPIC);
         final String output_topic = context.getString(KAFKA_OUTPUT_TOPIC);
 
-        HashSet<String> topicsSet = new HashSet<String>(Arrays.asList(input_topic
-                .split(",")));
+        HashSet<String> topicsSet = new HashSet<String>(Arrays.asList(input_topic.split(",")));
         HashMap<String, String> kafkaParams = new HashMap<String, String>();
         kafkaParams.put("metadata.broker.list", brokers);
         kafkaParams.put("auto.offset.reset", "smallest");
@@ -108,7 +107,8 @@ public class Analyzer {
                 String value = tuple2._2().replace('\'', '\"');
                 logger.info("Analyzer received " + value);
 
-                Gson gson = new Gson();
+                producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
+                /*Gson gson = new Gson();
                 try {
                     KeyVal keyVal = gson.fromJson(value, KeyVal.class);
                     if (keyVal != null) {
@@ -122,7 +122,7 @@ public class Analyzer {
                     }
                 } catch (ParseException e) {
                     logger.info("Parsing exception for msg: " + value, e);
-                }
+                }*/
                 return value;
             }
         });
