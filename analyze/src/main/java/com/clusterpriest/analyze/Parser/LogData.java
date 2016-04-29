@@ -49,7 +49,7 @@ public class LogData {
                 "\"date\": \"" + date + "\", " +
                 "\"type\": \"" + type + "\", " +
                 "\"filename\": \"" + fileName + "\", " +
-                "\"message\":\"" + message + "\"" +
+                "\"message\":\"" + message + "\", " +
                 "\"filter\":\"" + filterType + "\"" +
                 "}";
     }
