@@ -13,11 +13,11 @@
 
 package com.clusterpriest.analyze;
 
-import com.clusterpriest.analyze.engine.State;
-import com.clusterpriest.common.utils.Context;
-import com.clusterpriest.common.kafka.KafkaProducerThread;
 import com.clusterpriest.analyze.engine.Engine;
 import com.clusterpriest.analyze.engine.EngineFactory;
+import com.clusterpriest.analyze.engine.State;
+import com.clusterpriest.common.kafka.KafkaProducerThread;
+import com.clusterpriest.common.utils.Context;
 import com.clusterpriest.filter.log.LogData;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -33,7 +33,6 @@ import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
-import scala.util.parsing.combinator.testing.Str;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,14 +46,12 @@ public class Analyze {
 
   private static final String KAFKA_BROKERS = "kafka.brokers";
   private static final String KAFKA_INPUT_TOPIC = "kafka.input.topic";
-  private static final String KAFKA_OUTPUT_TOPIC = "kafka.output.topic";
 
   private static final String SPARK_APP_NAME = "spark.app.name";
   private static final String SPARK_MASTER = "spark.master";
   private static final String SPARK_BATCH_DURATION = "spark.batch.duration";
 
   private static KafkaProducerThread producerThread = null;
-  private static EngineFactory engineFactory;
 
   public static void main(String[] args) {
     String confFile;
@@ -125,7 +122,7 @@ public class Analyze {
             engine.addToMap(file, filteredLogData.rootCause);
             producerThread.addRecord(new ProducerRecord<String, String>("notify_" + host,
                 engine.getRootCauses(file).toString(),
-                "Due to these recent " + Arrays.toString(new HashSet(engine.getRootCauses(file)).toArray())
+                "Due to " + Arrays.toString(new HashSet(engine.getRootCauses(file)).toArray())
                     + ", you might see " + doPrediction(engine)));
           }
         }
