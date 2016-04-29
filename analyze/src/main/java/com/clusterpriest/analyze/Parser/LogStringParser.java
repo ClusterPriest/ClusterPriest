@@ -18,25 +18,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LogStringParser {
-    private static LogStringParser instance;
+    //private static LogStringParser instance;
 
     private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(LogStringParser.class);
 
-    private LogStringParser() {
-    }
+    //private LogStringParser() {
+    //}
 
-    public synchronized static LogStringParser getInstance() {
+    /*public synchronized static LogStringParser getInstance() {
         if (instance == null) {
             instance = new LogStringParser();
         }
 
         return instance;
-    }
+    }*/
 
     public LogData parse(String logString) throws ParseException {
         Pattern logPattern = Pattern.compile("(\\S+ \\S+) +(\\S+) +\\s*(\\S+)\\s*\\: +(.*)");
         Matcher matcher = logPattern.matcher(logString);
-        
+
         boolean found = matcher.find();
         LOG.info("Log string: " + logString + ", matcher found: " + found);
         if (found) {
