@@ -107,14 +107,14 @@ public class Analyzer {
                 String value = tuple2._2().replace('\'', '\"');
                 logger.info("Analyzer received " + value);
 
-                producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
-                /*Gson gson = new Gson();
+                //producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
+                Gson gson = new Gson();
                 try {
                     KeyVal keyVal = gson.fromJson(value, KeyVal.class);
                     if (keyVal != null) {
                         final LogData logData = (new LogStringParser()).parse(keyVal.message);
                         if (logData != null) {
-                            producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
+                            producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                         }
                         else {
                             logger.info("logdata is null: " + keyVal.toString() + "\n" + keyVal.message);
@@ -122,7 +122,7 @@ public class Analyzer {
                     }
                 } catch (ParseException e) {
                     logger.info("Parsing exception for msg: " + value, e);
-                }*/
+                }
                 return value;
             }
         });
