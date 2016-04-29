@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class NoFilter implements IFilter {
   @Override
   public FilterFactory.FILTER_TYPE filterType() {
-    return FilterFactory.FILTER_TYPE.ERROR;
+    return FilterFactory.FILTER_TYPE.NO;
   }
 
   @Override
