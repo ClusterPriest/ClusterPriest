@@ -109,12 +109,11 @@ public class Analyzer {
                 final String value = tuple2._2();
                 logger.info("Analyzer received " + value);
                 ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = null;
                 try {
-                    root = mapper.readValue(value, JsonNode.class);
-                    if (root != null) {
-                        final JsonNode message = root.get("message");
-                        final LogData logData = LogStringParser.getInstance().parse(message.asText());
+                    KeyVal keyVal = mapper.readValue(value, KeyVal.class);
+                    if (keyVal != null) {
+                        final String message = keyVal.message;
+                        final LogData logData = LogStringParser.getInstance().parse(message);
                         if (logData != null) {
                             producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
                         }
@@ -133,5 +132,10 @@ public class Analyzer {
         // Start the computation
         javaStreamingContext.start();
         javaStreamingContext.awaitTermination();
+    }
+
+    public class KeyVal {
+        public String key;
+        public String message;
     }
 }
