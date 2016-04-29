@@ -138,6 +138,14 @@ public class Analyzer {
         public String message;
         public String key;
 
+        public KeyVal() {
+        }
+
+        public KeyVal(String message, String key) {
+            this.message = message;
+            this.key = key;
+        }
+
         public String getMessage() {
             return message;
         }
