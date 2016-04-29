@@ -15,15 +15,10 @@ package com.clusterpriest.analyze;
 
 import com.clusterpriest.common.utils.Context;
 import com.clusterpriest.common.kafka.KafkaProducerThread;
-<<<<<<< fbef95204c42ee0814ab12c83670bc6bffd87fbe
-import com.clusterpriest.filter.logfilter.FilterFactory;
-import com.clusterpriest.filter.logfilter.SuspiciousFilter;
-=======
 import com.clusterpriest.filter.engine.Engine;
 import com.clusterpriest.filter.engine.EngineFactory;
 import com.clusterpriest.filter.log.LogData;
 import com.google.gson.Gson;
->>>>>>> Rules engine
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
