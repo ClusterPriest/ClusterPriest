@@ -21,9 +21,10 @@ public class LogStringParser {
     private static Pattern logPattern = Pattern.compile("(\\S+ \\S+) +(\\S+) +\\s*(\\S+)\\s*\\: +(.*)");
     private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(LogStringParser.class);
 
-    private LogStringParser() {}
+    private LogStringParser() {
+    }
 
-    public static LogStringParser getInstance() {
+    public synchronized static LogStringParser getInstance() {
         if (instance == null) {
             instance = new LogStringParser();
         }
@@ -33,9 +34,11 @@ public class LogStringParser {
 
     public LogData parse(String logString) throws ParseException {
         Matcher matcher = logPattern.matcher(logString);
-        LOG.info("Log string: " + logString + ", matcher found: " + matcher.find());
-        if (matcher.find())
+        boolean found = matcher.find();
+        LOG.info("Log string: " + logString + ", matcher found: " + found);
+        if (found) {
             return new LogData(matcher.group(0), matcher.group(1), matcher.group(2), matcher.group(3));
+        }
         return null;
     }
 }
