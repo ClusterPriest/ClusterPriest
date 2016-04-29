@@ -20,17 +20,17 @@ public class State {
   }
 
   public String predict(Set<String> current) {
-    Sets.SetView<String> difference = Sets.difference(current, CAUSES);
+    Sets.SetView<String> difference = Sets.difference(CAUSES, current);
     int size = difference.size();
     switch (size) {
       case 0:
-        return "Health is good";
+        return "Cluster Memory Failure";
       case 1:
         return "Broker Failure Exception";
       case 2:
         return "ZooKeeper Failure Exception";
       default:
-        return "Cluster Memory Failure";
+        return "Health is good";
     }
   }
 }
