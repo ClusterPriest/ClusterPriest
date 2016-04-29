@@ -56,7 +56,7 @@ public class Filter {
         String confFile;
         if (args.length != 1) {
             logger.warn("A config file is expected as argument. Using default file, conf/analyzer.conf");
-            confFile = "conf/analyzer.conf";
+            confFile = "conf/filter.conf";
         } else {
             confFile = args[0];
         }

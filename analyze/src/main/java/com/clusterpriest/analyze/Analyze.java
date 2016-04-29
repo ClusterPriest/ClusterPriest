@@ -52,7 +52,7 @@ public class Analyze {
         String confFile;
         if (args.length != 1) {
             logger.warn("A config file is expected as argument. Using default file, conf/analyzer.conf");
-            confFile = "conf/rulebuilder.conf";
+            confFile = "conf/analyze.conf";
         } else {
             confFile = args[0];
         }
