@@ -112,16 +112,15 @@ public class Analyzer {
                 JsonNode root = null;
                 try {
                     root = mapper.readValue(value, JsonNode.class);
+                    if (root != null) {
+                        final JsonNode message = root.get("message");
+                        final LogData logData = LogStringParser.getInstance().parse(message.asText());
+                        if (logData != null) {
+                            producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
+                        }
+                    }
                 } catch (IOException e) {
                     logger.info("Failed to parse JSON message: " + value);
-                }
-                final JsonNode message = root.get("message");
-                final LogData logData;
-                try {
-                    logData = LogStringParser.getInstance().parse(message.asText());
-                    if (logData != null) {
-                        producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), logData.toString()));
-                    }
                 } catch (ParseException e) {
                     logger.info("Parsing exception for msg: " + value);
                 }
