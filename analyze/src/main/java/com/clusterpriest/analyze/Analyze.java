@@ -3,9 +3,9 @@
  * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
  * to You under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
@@ -15,8 +15,15 @@ package com.clusterpriest.analyze;
 
 import com.clusterpriest.common.utils.Context;
 import com.clusterpriest.common.kafka.KafkaProducerThread;
+<<<<<<< fbef95204c42ee0814ab12c83670bc6bffd87fbe
 import com.clusterpriest.filter.logfilter.FilterFactory;
 import com.clusterpriest.filter.logfilter.SuspiciousFilter;
+=======
+import com.clusterpriest.filter.engine.Engine;
+import com.clusterpriest.filter.engine.EngineFactory;
+import com.clusterpriest.filter.log.LogData;
+import com.google.gson.Gson;
+>>>>>>> Rules engine
 import kafka.serializer.StringDecoder;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.spark.SparkConf;
@@ -35,127 +42,134 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class Analyze {
-    private static final Logger logger = LoggerFactory.getLogger(Analyze.class);
+  private static final Logger logger = LoggerFactory.getLogger(Analyze.class);
 
-    private static final String KAFKA_BROKERS = "kafka.brokers";
-    private static final String KAFKA_INPUT_TOPIC = "kafka.input.topic";
-    private static final String KAFKA_OUTPUT_TOPIC = "kafka.output.topic";
+  private static final String KAFKA_BROKERS = "kafka.brokers";
+  private static final String KAFKA_INPUT_TOPIC = "kafka.input.topic";
+  private static final String KAFKA_OUTPUT_TOPIC = "kafka.output.topic";
 
-    private static final String SPARK_APP_NAME = "spark.app.name";
-    private static final String SPARK_MASTER = "spark.master";
-    private static final String SPARK_BATCH_DURATION = "spark.batch.duration";
+  private static final String SPARK_APP_NAME = "spark.app.name";
+  private static final String SPARK_MASTER = "spark.master";
+  private static final String SPARK_BATCH_DURATION = "spark.batch.duration";
 
-    private static KafkaProducerThread producerThread = null;
-    private static FilterFactory filterFactory;
+  private static KafkaProducerThread producerThread = null;
+  private static EngineFactory engineFactory;
 
-    public static void main(String[] args) {
-        String confFile;
-        if (args.length != 1) {
-            logger.warn("A config file is expected as argument. Using default file, conf/analyzer.conf");
-            confFile = "conf/analyze.conf";
-        } else {
-            confFile = args[0];
-        }
-        logger.info("Starting analysis");
+  public static void main(String[] args) {
+    String confFile;
+    if (args.length != 1) {
+      logger.warn("A config file is expected as argument. Using default file, conf/analyzer.conf");
+      confFile = "conf/analyze.conf";
+    } else {
+      confFile = args[0];
+    }
+    logger.info("Starting analysis");
 
-        Context context;
-        try {
-            context = new Context(confFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-
-        setupFilters();
-        // Create context
-        SparkConf sparkConf = new SparkConf().setAppName(context.getString(SPARK_APP_NAME));
-        sparkConf.setMaster(context.getString(SPARK_MASTER));
-        JavaStreamingContext javaStreamingContext = new JavaStreamingContext(sparkConf,
-                Durations.seconds(Integer.parseInt(context.getString(SPARK_BATCH_DURATION))));
-
-        final String brokers = context.getString(KAFKA_BROKERS);
-        final String input_topic = context.getString(KAFKA_INPUT_TOPIC);
-        final String output_topic = context.getString(KAFKA_OUTPUT_TOPIC);
-
-        HashSet<String> topicsSet = new HashSet<String>(Arrays.asList(input_topic.split(",")));
-        HashMap<String, String> kafkaParams = new HashMap<String, String>();
-        kafkaParams.put("metadata.broker.list", brokers);
-        kafkaParams.put("auto.offset.reset", "smallest");
-
-        // Create direct kafka stream with brokers and topics
-        JavaPairInputDStream<String, String> messages = KafkaUtils.createDirectStream(
-                javaStreamingContext,
-                String.class,
-                String.class,
-                StringDecoder.class,
-                StringDecoder.class,
-                kafkaParams,
-                topicsSet
-        );
-
-        if (producerThread == null) {
-            producerThread = new KafkaProducerThread(brokers, false);
-            producerThread.start();
-        }
-
-        // Get the json, split them into words, count the words and print
-        JavaDStream<String> json = messages.map(new Function<Tuple2<String, String>, String>() {
-            @Override
-            public String call(Tuple2<String, String> tuple2) {
-                String value = tuple2._2().replace('\'', '\"');
-                logger.info("Rule Builder received " + value);
-                producerThread.addRecord(new ProducerRecord<String, String>(output_topic, tuple2._1(), tuple2._2()));
-
-                return value;
-            }
-        });
-        json.print();
-
-        // Start the computation
-        javaStreamingContext.start();
-        javaStreamingContext.awaitTermination();
+    Context context;
+    try {
+      context = new Context(confFile);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return;
     }
 
-    private static void setupFilters() {
-        // TODO: 4/29/16 read from properties file and construct the filters
-        filterFactory = new FilterFactory();
-        filterFactory.addFilter(new SuspiciousFilter());
+    // Create context
+    SparkConf sparkConf = new SparkConf().setAppName(context.getString(SPARK_APP_NAME));
+    sparkConf.setMaster(context.getString(SPARK_MASTER));
+    JavaStreamingContext javaStreamingContext = new JavaStreamingContext(sparkConf,
+        Durations.seconds(Integer.parseInt(context.getString(SPARK_BATCH_DURATION))));
+
+    final String brokers = context.getString(KAFKA_BROKERS);
+    final String input_topic = context.getString(KAFKA_INPUT_TOPIC);
+    final String output_topic = context.getString(KAFKA_OUTPUT_TOPIC);
+
+    HashSet<String> topicsSet = new HashSet<String>(Arrays.asList(input_topic.split(",")));
+    HashMap<String, String> kafkaParams = new HashMap<String, String>();
+    kafkaParams.put("metadata.broker.list", brokers);
+    kafkaParams.put("auto.offset.reset", "smallest");
+
+    // Create direct kafka stream with brokers and topics
+    JavaPairInputDStream<String, String> messages = KafkaUtils.createDirectStream(
+        javaStreamingContext,
+        String.class,
+        String.class,
+        StringDecoder.class,
+        StringDecoder.class,
+        kafkaParams,
+        topicsSet
+    );
+
+    if (producerThread == null) {
+      producerThread = new KafkaProducerThread(brokers, false);
+      producerThread.start();
     }
 
-    public class KeyVal {
-        public String message;
-        public String key;
+    // Get the json, split them into words, count the words and print
+    JavaDStream<String> json = messages.map(new Function<Tuple2<String, String>, String>() {
+      @Override
+      public String call(Tuple2<String, String> tuple2) {
+        String key = tuple2._1().replace('\'', '\"');
+        String value = tuple2._2().replace('\'', '\"');
+        logger.info("Rule Builder received " + value);
 
-        public KeyVal() {
+        Gson gson = new Gson();
+        LogData filteredLogData = gson.fromJson(value, LogData.class);
+        if (filteredLogData != null) {
+          int index = key.indexOf(':');
+          if (index != -1) {
+            String host = key.substring(0,  index);
+            String file = key.substring(index + 1);
+            Engine engine = EngineFactory.getInstance().getFromEngineMap(host);
+            engine.addToMap(file, filteredLogData.rootCause);
+            producerThread.addRecord(new ProducerRecord<String, String>("notify_" + host,
+                engine.getRootCauses(file).toString(),
+                "dummy prediction"));
+          }
         }
+        return value;
+      }
+    });
+    json.print();
 
-        public KeyVal(String message, String key) {
-            this.message = message;
-            this.key = key;
-        }
+    // Start the computation
+    javaStreamingContext.start();
+    javaStreamingContext.awaitTermination();
+  }
 
-        public String getMessage() {
-            return message;
-        }
+  public class KeyVal {
+    public String message;
+    public String key;
 
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        @Override
-        public String toString() {
-            return "KeyVal{" +
-                    "message='" + message + '\'' +
-                    ", key='" + key + '\'' +
-                    '}';
-        }
+    public KeyVal() {
     }
+
+    public KeyVal(String message, String key) {
+      this.message = message;
+      this.key = key;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    public void setMessage(String message) {
+      this.message = message;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public void setKey(String key) {
+      this.key = key;
+    }
+
+    @Override
+    public String toString() {
+      return "KeyVal{" +
+          "message='" + message + '\'' +
+          ", key='" + key + '\'' +
+          '}';
+    }
+  }
 }
